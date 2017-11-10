@@ -6,11 +6,13 @@ MODEL_DIR = 'model'
 
 
 def predict_popularity(popularity_model, users, k):
-    if isinstance(users, list):
-        popularity_recomm = popularity_model.recommend(users=users, k=5)
-        popularity_recomm.print_rows(num_rows=25)
+    if not isinstance(users, list):
+        users_lst = list()
+        users_lst.append(users)
     else:
-        print "SSS  :  ", type(users)
+        users_lst = users
+    popularity_recomm = popularity_model.recommend(users=users_lst, k=5)
+    popularity_recomm.print_rows(num_rows=25)
 
 
 def predict_CF_item_sim(item_sim_model, users, k=5):

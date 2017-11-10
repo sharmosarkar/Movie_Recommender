@@ -4,20 +4,26 @@ import Recommender
 import Evaluation as Eval
 
 DATA_DIR = 'movie_dataset/ml-100k/'
+_test_data = None
+
+
+def load_train_test_data():
+    rating_train_data = os.path.join(DATA_DIR, 'ua.base')
+    rating_test_data = os.path.join(DATA_DIR, 'ua.test')
+    ratings_base, ratings_test = ProcessData.process_data(None, None, None, 'train_test_data',
+                                                          rating_train_data, rating_test_data)
+    # ProcessData.check_loaded_data(users, ratings, items, ratings_base, ratings_test)
+    train_data, test_data = ProcessData.create_train_test_SFrame(ratings_base, ratings_test)
+    return train_data, test_data
 
 
 def train():
     user_data_file = os.path.join(DATA_DIR, 'u.user')
     rating_data_file = os.path.join(DATA_DIR, 'u.data')
     item_rating_data = os.path.join(DATA_DIR, 'u.item')
-    rating_train_data = os.path.join(DATA_DIR, 'ua.base')
-    rating_test_data = os.path.join(DATA_DIR, 'ua.test')
     users, ratings, items = ProcessData.process_data(user_data_file, rating_data_file, item_rating_data,
                                                      type='metadata')
-    ratings_base, ratings_test = ProcessData.process_data(None, None, None, 'train_test_data',
-                                                          rating_train_data, rating_test_data)
-    # ProcessData.check_loaded_data(users, ratings, items, ratings_base, ratings_test)
-    train_data, test_data = ProcessData.create_train_test_SFrame(ratings_base, ratings_test)
+    train_data, test_data = load_train_test_data()
     popularity_model, item_sim_model = Recommender.train_models(train_data, users, items)
     return popularity_model, item_sim_model, users, items
 
@@ -33,10 +39,18 @@ def predict(user_id, number_reco):
         movie = movie_list[itm]
         print movie['movie_id'], movie['movie_name'], movie['movie_genre']
 
+
+def evaluate():
+    train_data, test_data = load_train_test_data()
+    popularity_model, item_sim_model, users, items = Recommender.load_models()
+    Eval.compare_models(test_data, popularity_model, item_sim_model)
+
+
 def main():
     # model based Collaborative Prediction
     # popularity_model, item_sim_model, users, items = train()
-    predict(5, 5)
+    # predict(5, 5)
+    evaluate()
 
 
 if __name__ == '__main__':
