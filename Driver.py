@@ -28,7 +28,7 @@ def predict(user_id, number_reco):
     # Recommender.predict_CF_item_sim(item_sim_model, range(1, 6), 5)
     item_sim_recomm = Recommender.predict_CF_item_sim(item_sim_model, user_id, number_reco)
     movie_list = Recommender.decipher_predictions(item_sim_recomm, users, items, number_reco)
-    print '\nMovie recommendations for user_id = ' + user_id + ' are : \n'
+    print '\nMovie recommendations for user_id = ' + str(user_id) + ' are : \n'
     for itm in range(0, number_reco):
         movie = movie_list[itm]
         print movie['movie_id'], movie['movie_name'], movie['movie_genre']

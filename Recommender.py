@@ -13,7 +13,7 @@ def predict_popularity(popularity_model, users, k):
         print "SSS  :  ", type(users)
 
 
-def predict_CF_item_sim(item_sim_model, users, k):
+def predict_CF_item_sim(item_sim_model, users, k=5):
     if not isinstance(users, list):
         users_lst = list()
         users_lst.append(users)
